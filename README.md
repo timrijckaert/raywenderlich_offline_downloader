@@ -2,6 +2,10 @@
 Use this tool to generate a script that you can use to download [Raywenderlich](https://www.raywenderlich.com) videos and materials (zips) for offline use. 
 
 ### Usage
+
+You can find a prebuild executable in the `release/` folder.  
+No pipeline at the moment.
+
 ```
 ./rwl -u 'firstname.lastname@emailprovider.com' -p 'password' 'https://www.raywenderlich.com/4001741-swiftui'
 ```
@@ -27,4 +31,13 @@ Execute this script to actually start the download.
 -p, --password          Provide your Raywenderlich password address
 -m, --[no-]materials    Whether you want to fetch the links to the materials.
                         (defaults to on)
+```
+
+## Build it yourself
+Make sure you have the Dart tools installed.  
+
+To build, run:
+
+```
+dart2native bin/main.dart -o release/linux/rwl
 ```
