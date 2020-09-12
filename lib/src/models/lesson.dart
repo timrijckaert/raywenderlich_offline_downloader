@@ -1,4 +1,6 @@
-class Lesson {
+import 'output.dart';
+
+class Lesson with Metadata {
   final int episode;
   final String title;
   final String lessonUrl;

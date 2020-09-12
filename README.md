@@ -3,7 +3,7 @@ Use this tool to generate a script that you can use to download [Raywenderlich](
 
 ### Usage
 ```
-./rwlofflinedownloader -u 'firstname.lastname@emailprovider.com' -p 'password' 'https://www.raywenderlich.com/4001741-swiftui'
+./rwl -u 'firstname.lastname@emailprovider.com' -p 'password' 'https://www.raywenderlich.com/4001741-swiftui'
 ```
 
 This will generate a `bash` script that makes use of [youtube-dl](https://github.com/ytdl-org/youtube-dl) for downloading the actual streams.  

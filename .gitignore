@@ -23,3 +23,4 @@ doc/api/
 # output files
 *_usertoken.json
 *.sh
+!build.sh

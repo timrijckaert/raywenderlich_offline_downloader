@@ -2,10 +2,11 @@ import 'dart:io';
 
 import 'models/models.dart';
 
+/// TODO refactor to allow for different types of [Metadata].
 class YoutubeDlPrinter {
   YoutubeDlPrinter._();
 
-  static void printBashFile(
+  static void printCourse(
     final bool canExtractMaterials,
     final Course course,
   ) async {
@@ -46,5 +47,14 @@ class YoutubeDlPrinter {
     await sink.close();
 
     print('Run: `sh $bashFilename` in your terminal.');
+  }
+
+  static void printBashFile(
+    final bool canExtractMaterials,
+    final Metadata metadata,
+  ) async {
+    if (metadata.runtimeType == Course) {
+      printCourse(canExtractMaterials, metadata);
+    }
   }
 }

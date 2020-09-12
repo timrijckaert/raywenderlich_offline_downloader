@@ -23,7 +23,7 @@ void main(List<String> arguments) async {
   final commandLineArgsResult = parser.parse(arguments);
   String username = commandLineArgsResult['username'];
   String password = commandLineArgsResult['password'];
-  final courses = commandLineArgsResult.rest;
+  final urls = commandLineArgsResult.rest;
   final extractMaterials = commandLineArgsResult['materials'];
 
   void printExampleUsage(final String extra) {
@@ -43,15 +43,15 @@ void main(List<String> arguments) async {
     return;
   }
 
-  if (courses.isEmpty) {
-    printExampleUsage('No courses found to download');
+  if (urls.isEmpty) {
+    printExampleUsage('No urls found to download');
     return;
   }
 
   await RaywenderlichMetaDownloader.extractMetadata(
     username,
     password,
-    courses,
+    urls,
     extractMaterials,
   );
 }
