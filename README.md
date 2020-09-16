@@ -22,22 +22,29 @@ youtube-dl -o 'course/3_challenge:_making_a_programming_to-do_list.%(ext)s' http
 ...
 ```
 
+You can also export to a `json` file if you want.
+
 Execute this script to actually start the download.  
 
 ## Options
 
 ```
--u, --username          Provide your Raywenderlich email address.
--p, --password          Provide your Raywenderlich password address
--m, --[no-]materials    Whether you want to fetch the links to the materials.
-                        (defaults to on)
+-u, --username                     Provide your Raywenderlich email address.
+-p, --password                     Provide your Raywenderlich password address
+-o, --output
+          [json]                   Export to JSON
+          [youtubedl] (default)    Makes a bash script with the help of Youtubedl and curl
+
+-m, --[no-]materials               Whether you want to fetch the links to the materials.
+                                   (defaults to on)
 ```
 
 ## Build it yourself
 Make sure you have the Dart tools installed.  
 
-To build, run:
+To build a self contained executable, run:
 
 ```
-dart2native bin/main.dart -o release/linux/rwl
+pub get
+dart2native bin/main.dart -o release/[linux|mac]/rwl
 ```

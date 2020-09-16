@@ -21,6 +21,7 @@ build/
 doc/api/
 
 # output files
+raywenderlich-downloader/
 *_usertoken.json
 *.sh
 !build.sh

@@ -8,6 +8,10 @@ const _usernameKey = 'username';
 const _validityKey = 'validUntil';
 const _tokenKey = 'token';
 
+const _userInputSelector = 'input.o-input[name=username]';
+const _passwordInputSelector = 'input.o-input[name=password]';
+const _submitButtonSelector = 'form button[type=submit]';
+
 class TokenProvider {
   TokenProvider._();
 
@@ -88,6 +92,24 @@ class TokenProvider {
     }
   }
 
+  static void _onConsoleLogMessagePrinted(
+      final ConsoleMessage consoleMessage) async {
+    if (consoleMessage.args.isNotEmpty) {
+      try {
+        final jsonifiedConsoleMessage = consoleMessage
+            .args.first.remoteObject.preview.properties
+            .map((e) => e.toJson())
+            .toList()[1];
+            
+        if (jsonifiedConsoleMessage['name'] == 'errorDescription') {
+          print(jsonifiedConsoleMessage['value']);
+          exit(1);
+        }
+      } catch (_) {
+      }
+    }
+  }
+
   static Future<String> getUserToken(
     final Browser browser,
     final String username,
@@ -101,8 +123,9 @@ class TokenProvider {
       return cachedToken;
     }
 
-    final raywenderlichPage = await browser.newPage();
-    await raywenderlichPage.goto(
+    final loginPage = await browser.newPage();
+    loginPage.onConsole.listen(_onConsoleLogMessagePrinted);
+    await loginPage.goto(
       'https://www.raywenderlich.com/sessions/new',
       wait: Until.networkIdle,
     );
@@ -110,15 +133,9 @@ class TokenProvider {
     browser.onTargetChanged
         .listen((target) => _onUrlChange(browser, username, target, completer));
 
-    final usernameField =
-        await raywenderlichPage.$('input.o-input[name=username]');
-    await usernameField.type(username);
-
-    final passwordField =
-        await raywenderlichPage.$('input.o-input[name=password]');
-    await passwordField.type(password);
-
-    await (await raywenderlichPage.$('form button[type=submit]')).tap();
+    await (await loginPage.$(_userInputSelector)).type(username);
+    await (await loginPage.$(_passwordInputSelector)).type(password);
+    await (await loginPage.$(_submitButtonSelector)).tap();
 
     return completer.future;
   }

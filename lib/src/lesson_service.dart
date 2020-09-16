@@ -1,4 +1,4 @@
-import 'models/models.dart';
+import 'models.dart';
 import 'package:puppeteer/puppeteer.dart';
 import 'package:pedantic/pedantic.dart';
 
@@ -47,6 +47,40 @@ class _VideoResponse {
   });
 }
 
+class _Mapper {
+  const _Mapper._();
+  static Lesson lessonFromVideoResponse({
+    final String lessonUrl,
+    final String videoId,
+    final _VideoResponse response,
+  }) {
+    String _streamUrlFromClips(final List<_Clip> clips) => clips
+        .firstWhere((element) => element.clipType == 'primary_content')
+        .attachments
+        .firstWhere((element) => element.kind == 'stream')
+        .url;
+
+    String _materialDownloadLinkFromAttachments(
+        final List<_Attachment> attachments) {
+      final materialsAttachment = attachments.firstWhere(
+        (attachment) => attachment.kind == 'materials',
+        orElse: () => null,
+      );
+      return materialsAttachment == null ? '' : materialsAttachment.url;
+    }
+
+    return Lesson(
+      episode: response.episode,
+      title: response.name,
+      lessonUrl: lessonUrl,
+      videoId: videoId,
+      streamUrl: _streamUrlFromClips(response.clips),
+      materialDownloadLink:
+          _materialDownloadLinkFromAttachments(response.attachments),
+    );
+  }
+}
+
 class _RaywenderlichApi {
   _RaywenderlichApi._();
 
@@ -76,10 +110,8 @@ class _RaywenderlichApi {
     }
 
     final completer = Completer<_VideoResponse>();
-    final response = await get(
-      lessonUrl,
-      headers: {'Authorization': 'Token $userToken'},
-    ).timeout(Duration(seconds: 30));
+    final response =
+        await get(lessonUrl, headers: {'Authorization': 'Token $userToken'});
 
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body);
@@ -99,6 +131,8 @@ class _RaywenderlichApi {
         clips: _clipsFromVideoObj(videoObj),
       );
       completer.complete(videoResponse);
+    } else {
+      throw '';
     }
     return completer.future;
   }
@@ -107,34 +141,15 @@ class _RaywenderlichApi {
     final String videoId,
     final String userToken,
   ) async {
-    String _streamUrlFromClips(final List<_Clip> clips) => clips
-        .firstWhere((element) => element.clipType == 'primary_content')
-        .attachments
-        .firstWhere((element) => element.kind == 'stream')
-        .url;
-
     String _constructUrl(final String videoId) =>
         'https://videos.raywenderlich.com/api/v1/videos/$videoId.json';
 
-    String _materialDownloadLinkFromAttachments(
-        final List<_Attachment> attachments) {
-      final materialsAttachment = attachments.firstWhere(
-        (attachment) => attachment.kind == 'materials',
-        orElse: () => null,
-      );
-      return materialsAttachment == null ? '' : materialsAttachment.url;
-    }
-
     final lessonUrl = _constructUrl(videoId);
     final response = await _getVideoResponseFromVideoId(lessonUrl, userToken);
-    return Lesson(
-      episode: response.episode,
-      title: response.name,
+    return _Mapper.lessonFromVideoResponse(
       lessonUrl: lessonUrl,
       videoId: videoId,
-      streamUrl: _streamUrlFromClips(response.clips),
-      materialDownloadLink:
-          _materialDownloadLinkFromAttachments(response.attachments),
+      response: response,
     );
   }
 }

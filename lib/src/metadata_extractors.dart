@@ -1,5 +1,5 @@
 import 'package:puppeteer/puppeteer.dart';
-import 'models/models.dart';
+import 'models.dart';
 import 'dart:async';
 import 'lesson_service.dart';
 
@@ -13,14 +13,14 @@ mixin MetadataExtractor<Metadata> {
   );
 }
 
-/// Extracts metadate from urls like 'https://www.raywenderlich.com/4919757-your-first-ios-and-swiftui-app'
+/// Extracts metadata from urls like 'https://www.raywenderlich.com/4919757-your-first-ios-and-swiftui-app'
 class CourseMetadataExtractor with MetadataExtractor<Course> {
   static final RegExp _courseUrlRegex =
       RegExp(r'https:\/\/www\.raywenderlich\.com\/\d{7,}-[^\d]+$');
 
-  CourseMetadataExtractor._();
-
   static CourseMetadataExtractor _instance;
+
+  const CourseMetadataExtractor._();
 
   factory CourseMetadataExtractor() {
     _instance ??= CourseMetadataExtractor._();
@@ -64,9 +64,9 @@ class LearningPathMetadatExtractor with MetadataExtractor<LearningPath> {
   static final RegExp _pathUrlRegex = RegExp(
       r'https:\/\/www\.raywenderlich\.com\/\s*(ios|android|unity)\/paths\/learn$');
 
-  LearningPathMetadatExtractor._();
-
   static LearningPathMetadatExtractor _instance;
+
+  const LearningPathMetadatExtractor._();
 
   factory LearningPathMetadatExtractor() {
     _instance ??= LearningPathMetadatExtractor._();
@@ -82,6 +82,7 @@ class LearningPathMetadatExtractor with MetadataExtractor<LearningPath> {
     String userToken,
     String courseUrl,
   ) {
+    //TODO extract all from learning path
     throw 'Downloading full learning path is not yet implemented.';
   }
 }
@@ -91,9 +92,9 @@ class LessonExtractor with MetadataExtractor<Lesson> {
   static final RegExp _singleLessonUrlRegex = RegExp(
       r'https:\/\/www\.raywenderlich\.com\/\d{7,}-[\w\W]+\/lessons\/\d$');
 
-  LessonExtractor._();
-
   static LessonExtractor _instance;
+
+  LessonExtractor._();
 
   factory LessonExtractor() {
     _instance ??= LessonExtractor._();
