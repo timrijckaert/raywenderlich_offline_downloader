@@ -6,9 +6,10 @@ part 'models.g.dart';
 @JsonSerializable()
 class LearningSection {
   final String name;
-  final List<Course> courses;
+  final String description;
+  final Course course;
 
-  LearningSection({this.name, this.courses});
+  LearningSection({this.name, this.description, this.course});
 
   factory LearningSection.fromJson(Map<String, dynamic> json) =>
       _$LearningSectionFromJson(json);
@@ -20,6 +21,7 @@ class LearningSection {
 abstract class Metadata with _$Metadata {
   const factory Metadata.learningPath({
     final String name,
+    final String description,
     final List<LearningSection> sections,
   }) = LearningPath;
 

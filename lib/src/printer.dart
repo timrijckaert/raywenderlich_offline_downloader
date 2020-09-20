@@ -13,10 +13,14 @@ mixin Printer {
 }
 
 class _FileSystemNameSanitizer {
+  static final _wordsRegex = RegExp(r'(\w+)');
+
   _FileSystemNameSanitizer._();
 
-  static String sanitizedForFileSystemUse(final String s) =>
-      s.toLowerCase().replaceAll(' ', '_');
+  static String sanitizedForFileSystemUse(final String input) => _wordsRegex
+      .allMatches(input.toLowerCase())
+      .map((e) => e.group(1))
+      .join('_');
 }
 
 mixin _FileExportPrinter {
@@ -97,7 +101,8 @@ class YoutubeDlPrinter with _FileExportPrinter implements Printer {
     final String filename,
     final String streamUrl,
   ) =>
-      "youtube-dl -o '${directory}/$filename.%(ext)s' ${streamUrl}";
+      // ignore: prefer_single_quotes
+      "youtube-dl -o \"${directory}/$filename.%(ext)s\" ${streamUrl}";
 
   String _downloadMaterialCommand(
     final String directory,
@@ -113,18 +118,37 @@ class YoutubeDlPrinter with _FileExportPrinter implements Printer {
     final LearningPath learningPath,
     final bool canExportMaterials,
   ) {
-    //TODO improve output for learning path
-    throw 'Exporting learning paths are not implemented yet.';
+    String stringifiedLearningSections(
+        final List<LearningSection> learningSections) {
+      final strBuffer = StringBuffer();
+      for (var i = 0; i < learningSections.length; i++) {
+        final learningSection = learningSections[i];
+        strBuffer.writeln('# ---<${learningSection.name}> --- #');
+        strBuffer
+            .writeln(_courseOutput(learningSection.course, canExportMaterials));
+        strBuffer.writeln('# ---</${learningSection.name}> --- #');
+      }
+      return strBuffer.toString();
+    }
+
+    return '''
+# Course
+# ${learningPath.name}:
+# ${learningPath.description}
+
+${stringifiedLearningSections(learningPath.sections)}
+''';
   }
 
   String _lessonOutput(
     final Lesson lesson,
-    final bool canExportMaterials,
-  ) {
+    final bool canExportMaterials, {
+    final String dir,
+  }) {
     final strBuffer = StringBuffer();
 
     final directory =
-        _FileSystemNameSanitizer.sanitizedForFileSystemUse(lesson.title);
+        dir ?? _FileSystemNameSanitizer.sanitizedForFileSystemUse(lesson.title);
     final filename = _FileSystemNameSanitizer.sanitizedForFileSystemUse(
         '${lesson.episode} ${lesson.title}');
 
@@ -148,7 +172,15 @@ class YoutubeDlPrinter with _FileExportPrinter implements Printer {
     final bool canExportMaterials,
   ) =>
       course.lessons
-          .map((lesson) => _lessonOutput(lesson, canExportMaterials))
+          .map(
+            (lesson) => _lessonOutput(
+              lesson,
+              canExportMaterials,
+              dir: _FileSystemNameSanitizer.sanitizedForFileSystemUse(
+                course.title,
+              ),
+            ),
+          )
           .join('\n');
 
   @override

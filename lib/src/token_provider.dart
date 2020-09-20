@@ -103,7 +103,7 @@ class TokenProvider {
             
         if (jsonifiedConsoleMessage['name'] == 'errorDescription') {
           print(jsonifiedConsoleMessage['value']);
-          exit(1);
+          throw 'Wrong email or password.';
         }
       } catch (_) {
       }

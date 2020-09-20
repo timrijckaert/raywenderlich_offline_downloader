@@ -9,22 +9,24 @@ part of 'models.dart';
 LearningSection _$LearningSectionFromJson(Map<String, dynamic> json) {
   return LearningSection(
     name: json['name'] as String,
-    courses: (json['courses'] as List)
-        ?.map((e) =>
-            e == null ? null : Course.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
+    description: json['description'] as String,
+    course: json['course'] == null
+        ? null
+        : Course.fromJson(json['course'] as Map<String, dynamic>),
   );
 }
 
 Map<String, dynamic> _$LearningSectionToJson(LearningSection instance) =>
     <String, dynamic>{
       'name': instance.name,
-      'courses': instance.courses,
+      'description': instance.description,
+      'course': instance.course,
     };
 
 _$LearningPath _$_$LearningPathFromJson(Map<String, dynamic> json) {
   return _$LearningPath(
     name: json['name'] as String,
+    description: json['description'] as String,
     sections: (json['sections'] as List)
         ?.map((e) => e == null
             ? null
@@ -36,6 +38,7 @@ _$LearningPath _$_$LearningPathFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$_$LearningPathToJson(_$LearningPath instance) =>
     <String, dynamic>{
       'name': instance.name,
+      'description': instance.description,
       'sections': instance.sections,
     };
 

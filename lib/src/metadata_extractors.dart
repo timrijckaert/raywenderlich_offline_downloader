@@ -1,4 +1,6 @@
 import 'package:puppeteer/puppeteer.dart';
+import 'course_service.dart';
+import 'learning_path_service.dart';
 import 'models.dart';
 import 'dart:async';
 import 'lesson_service.dart';
@@ -31,29 +33,12 @@ class CourseMetadataExtractor with MetadataExtractor<Course> {
   bool canExtractMetadataFromUrl(final String url) =>
       _courseUrlRegex.hasMatch(url);
 
-  static Future<String> _courseTitle(final Page page) async =>
-      page.$eval('h1', 'el => el.innerText');
-
   @override
   Future<Course> metadataOutputForUrl(
     final Browser browser,
     final String userToken,
     final String courseUrl,
-  ) async {
-    final coursePage = await browser.newPage();
-    await coursePage.goto(courseUrl, wait: Until.domContentLoaded);
-    final courseTitle = await _courseTitle(coursePage);
-
-    print('Downloading meta data information for: $courseTitle');
-    final lessons = await LessonService.getLessons(
-      browser,
-      userToken,
-      coursePage,
-      courseUrl,
-    );
-
-    return Course(title: courseTitle, lessons: lessons);
-  }
+  ) async => CourseService.getCourse(browser, userToken, courseUrl);
 }
 
 /// Matches following urls:
@@ -80,11 +65,13 @@ class LearningPathMetadatExtractor with MetadataExtractor<LearningPath> {
   Future<LearningPath> metadataOutputForUrl(
     Browser browser,
     String userToken,
-    String courseUrl,
-  ) {
-    //TODO extract all from learning path
-    throw 'Downloading full learning path is not yet implemented.';
-  }
+    String learningPathUrl,
+  ) async =>
+      await LearningPathService.getLearningPath(
+        browser: browser,
+        userToken: userToken,
+        learningPathUrl: learningPathUrl,
+      );
 }
 
 /// https://www.raywenderlich.com/4919757-your-first-ios-and-swiftui-app/lessons/2

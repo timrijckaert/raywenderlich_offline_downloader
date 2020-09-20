@@ -26,9 +26,11 @@ class _$MetadataTearOff {
   const _$MetadataTearOff();
 
 // ignore: unused_element
-  LearningPath learningPath({String name, List<LearningSection> sections}) {
+  LearningPath learningPath(
+      {String name, String description, List<LearningSection> sections}) {
     return LearningPath(
       name: name,
+      description: description,
       sections: sections,
     );
   }
@@ -66,7 +68,9 @@ const $Metadata = _$MetadataTearOff();
 mixin _$Metadata {
   @optionalTypeArgs
   Result when<Result extends Object>({
-    @required Result learningPath(String name, List<LearningSection> sections),
+    @required
+        Result learningPath(
+            String name, String description, List<LearningSection> sections),
     @required
         Result lesson(int episode, String title, String lessonUrl,
             String videoId, String streamUrl, String materialDownloadLink),
@@ -74,7 +78,8 @@ mixin _$Metadata {
   });
   @optionalTypeArgs
   Result maybeWhen<Result extends Object>({
-    Result learningPath(String name, List<LearningSection> sections),
+    Result learningPath(
+        String name, String description, List<LearningSection> sections),
     Result lesson(int episode, String title, String lessonUrl, String videoId,
         String streamUrl, String materialDownloadLink),
     Result course(String title, List<Lesson> lessons),
@@ -113,7 +118,7 @@ abstract class $LearningPathCopyWith<$Res> {
   factory $LearningPathCopyWith(
           LearningPath value, $Res Function(LearningPath) then) =
       _$LearningPathCopyWithImpl<$Res>;
-  $Res call({String name, List<LearningSection> sections});
+  $Res call({String name, String description, List<LearningSection> sections});
 }
 
 class _$LearningPathCopyWithImpl<$Res> extends _$MetadataCopyWithImpl<$Res>
@@ -128,10 +133,13 @@ class _$LearningPathCopyWithImpl<$Res> extends _$MetadataCopyWithImpl<$Res>
   @override
   $Res call({
     Object name = freezed,
+    Object description = freezed,
     Object sections = freezed,
   }) {
     return _then(LearningPath(
       name: name == freezed ? _value.name : name as String,
+      description:
+          description == freezed ? _value.description : description as String,
       sections: sections == freezed
           ? _value.sections
           : sections as List<LearningSection>,
@@ -141,7 +149,7 @@ class _$LearningPathCopyWithImpl<$Res> extends _$MetadataCopyWithImpl<$Res>
 
 @JsonSerializable()
 class _$LearningPath implements LearningPath {
-  const _$LearningPath({this.name, this.sections});
+  const _$LearningPath({this.name, this.description, this.sections});
 
   factory _$LearningPath.fromJson(Map<String, dynamic> json) =>
       _$_$LearningPathFromJson(json);
@@ -149,11 +157,13 @@ class _$LearningPath implements LearningPath {
   @override
   final String name;
   @override
+  final String description;
+  @override
   final List<LearningSection> sections;
 
   @override
   String toString() {
-    return 'Metadata.learningPath(name: $name, sections: $sections)';
+    return 'Metadata.learningPath(name: $name, description: $description, sections: $sections)';
   }
 
   @override
@@ -162,6 +172,9 @@ class _$LearningPath implements LearningPath {
         (other is LearningPath &&
             (identical(other.name, name) ||
                 const DeepCollectionEquality().equals(other.name, name)) &&
+            (identical(other.description, description) ||
+                const DeepCollectionEquality()
+                    .equals(other.description, description)) &&
             (identical(other.sections, sections) ||
                 const DeepCollectionEquality()
                     .equals(other.sections, sections)));
@@ -171,6 +184,7 @@ class _$LearningPath implements LearningPath {
   int get hashCode =>
       runtimeType.hashCode ^
       const DeepCollectionEquality().hash(name) ^
+      const DeepCollectionEquality().hash(description) ^
       const DeepCollectionEquality().hash(sections);
 
   @override
@@ -180,7 +194,9 @@ class _$LearningPath implements LearningPath {
   @override
   @optionalTypeArgs
   Result when<Result extends Object>({
-    @required Result learningPath(String name, List<LearningSection> sections),
+    @required
+        Result learningPath(
+            String name, String description, List<LearningSection> sections),
     @required
         Result lesson(int episode, String title, String lessonUrl,
             String videoId, String streamUrl, String materialDownloadLink),
@@ -189,13 +205,14 @@ class _$LearningPath implements LearningPath {
     assert(learningPath != null);
     assert(lesson != null);
     assert(course != null);
-    return learningPath(name, sections);
+    return learningPath(name, description, sections);
   }
 
   @override
   @optionalTypeArgs
   Result maybeWhen<Result extends Object>({
-    Result learningPath(String name, List<LearningSection> sections),
+    Result learningPath(
+        String name, String description, List<LearningSection> sections),
     Result lesson(int episode, String title, String lessonUrl, String videoId,
         String streamUrl, String materialDownloadLink),
     Result course(String title, List<Lesson> lessons),
@@ -203,7 +220,7 @@ class _$LearningPath implements LearningPath {
   }) {
     assert(orElse != null);
     if (learningPath != null) {
-      return learningPath(name, sections);
+      return learningPath(name, description, sections);
     }
     return orElse();
   }
@@ -243,13 +260,16 @@ class _$LearningPath implements LearningPath {
 }
 
 abstract class LearningPath implements Metadata {
-  const factory LearningPath({String name, List<LearningSection> sections}) =
-      _$LearningPath;
+  const factory LearningPath(
+      {String name,
+      String description,
+      List<LearningSection> sections}) = _$LearningPath;
 
   factory LearningPath.fromJson(Map<String, dynamic> json) =
       _$LearningPath.fromJson;
 
   String get name;
+  String get description;
   List<LearningSection> get sections;
   $LearningPathCopyWith<LearningPath> get copyWith;
 }
@@ -367,7 +387,9 @@ class _$Lesson implements Lesson {
   @override
   @optionalTypeArgs
   Result when<Result extends Object>({
-    @required Result learningPath(String name, List<LearningSection> sections),
+    @required
+        Result learningPath(
+            String name, String description, List<LearningSection> sections),
     @required
         Result lesson(int episode, String title, String lessonUrl,
             String videoId, String streamUrl, String materialDownloadLink),
@@ -383,7 +405,8 @@ class _$Lesson implements Lesson {
   @override
   @optionalTypeArgs
   Result maybeWhen<Result extends Object>({
-    Result learningPath(String name, List<LearningSection> sections),
+    Result learningPath(
+        String name, String description, List<LearningSection> sections),
     Result lesson(int episode, String title, String lessonUrl, String videoId,
         String streamUrl, String materialDownloadLink),
     Result course(String title, List<Lesson> lessons),
@@ -517,7 +540,9 @@ class _$Course implements Course {
   @override
   @optionalTypeArgs
   Result when<Result extends Object>({
-    @required Result learningPath(String name, List<LearningSection> sections),
+    @required
+        Result learningPath(
+            String name, String description, List<LearningSection> sections),
     @required
         Result lesson(int episode, String title, String lessonUrl,
             String videoId, String streamUrl, String materialDownloadLink),
@@ -532,7 +557,8 @@ class _$Course implements Course {
   @override
   @optionalTypeArgs
   Result maybeWhen<Result extends Object>({
-    Result learningPath(String name, List<LearningSection> sections),
+    Result learningPath(
+        String name, String description, List<LearningSection> sections),
     Result lesson(int episode, String title, String lessonUrl, String videoId,
         String streamUrl, String materialDownloadLink),
     Result course(String title, List<Lesson> lessons),
