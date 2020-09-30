@@ -45,9 +45,10 @@ class CourseMetadataExtractor with MetadataExtractor<Course> {
 /// https://www.raywenderlich.com/ios/paths/learn
 /// https://www.raywenderlich.com/android/paths/learn
 /// https://www.raywenderlich.com/unity/paths/learn
+/// https://www.raywenderlich.com/ios/paths/iossoftware
 class LearningPathMetadatExtractor with MetadataExtractor<LearningPath> {
   static final RegExp _pathUrlRegex = RegExp(
-      r'https:\/\/www\.raywenderlich\.com\/\s*(ios|android|unity)\/paths\/learn$');
+      r'https:\/\/www\.raywenderlich\.com\/\s*(ios|android|unity)\/paths\/');
 
   static LearningPathMetadatExtractor _instance;
 
