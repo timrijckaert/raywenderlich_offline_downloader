@@ -76,9 +76,10 @@ class LearningPathMetadatExtractor with MetadataExtractor<LearningPath> {
 }
 
 /// https://www.raywenderlich.com/4919757-your-first-ios-and-swiftui-app/lessons/2
+/// https://www.raywenderlich.com/11590969-wwdc-2020-widgets
 class LessonExtractor with MetadataExtractor<Lesson> {
   static final RegExp _singleLessonUrlRegex = RegExp(
-      r'https:\/\/www\.raywenderlich\.com\/\d{7,}-[\w\W]+\/lessons\/\d$');
+      r'https:\/\/www\.raywenderlich\.com\/\d{7,}-[\w\W]+');
 
   static LessonExtractor _instance;
 
@@ -97,11 +98,11 @@ class LessonExtractor with MetadataExtractor<Lesson> {
   Future<Lesson> metadataOutputForUrl(
     Browser browser,
     String userToken,
-    String courseUrl,
+    String lessonUrl,
   ) async =>
       await LessonService.getLesson(
         browser: browser,
         userToken: userToken,
-        lessonUrl: courseUrl,
+        lessonUrl: lessonUrl,
       );
 }
