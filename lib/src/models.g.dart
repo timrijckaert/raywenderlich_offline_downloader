@@ -6,42 +6,6 @@ part of 'models.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-LearningSection _$LearningSectionFromJson(Map<String, dynamic> json) {
-  return LearningSection(
-    name: json['name'] as String,
-    description: json['description'] as String,
-    course: json['course'] == null
-        ? null
-        : Course.fromJson(json['course'] as Map<String, dynamic>),
-  );
-}
-
-Map<String, dynamic> _$LearningSectionToJson(LearningSection instance) =>
-    <String, dynamic>{
-      'name': instance.name,
-      'description': instance.description,
-      'course': instance.course,
-    };
-
-_$LearningPath _$_$LearningPathFromJson(Map<String, dynamic> json) {
-  return _$LearningPath(
-    name: json['name'] as String,
-    description: json['description'] as String,
-    sections: (json['sections'] as List)
-        ?.map((e) => e == null
-            ? null
-            : LearningSection.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
-  );
-}
-
-Map<String, dynamic> _$_$LearningPathToJson(_$LearningPath instance) =>
-    <String, dynamic>{
-      'name': instance.name,
-      'description': instance.description,
-      'sections': instance.sections,
-    };
-
 _$Lesson _$_$LessonFromJson(Map<String, dynamic> json) {
   return _$Lesson(
     episode: json['episode'] as int,

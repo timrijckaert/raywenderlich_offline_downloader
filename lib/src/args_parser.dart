@@ -35,13 +35,13 @@ class OutputConfig {
   );
 }
 
-class _InputArguments {
+class InputArguments {
   final String username;
   final String password;
   final List<String> inputUrls;
   final OutputConfig outputConfig;
 
-  _InputArguments(
+  InputArguments(
     this.username,
     this.password,
     this.inputUrls,
@@ -94,8 +94,8 @@ $helpUsage
     ''');
   }
 
-  static _InputArguments argsToInputArguments(final List<String> arguments) {
-    _InputArguments inputArguments;
+  static InputArguments argsToInputArguments(final List<String> arguments) {
+    InputArguments inputArguments;
     try {
       final commandLineArgsResult = _parser.parse(arguments);
       String username = commandLineArgsResult[_usernameKey];
@@ -120,7 +120,7 @@ $helpUsage
         printExampleUsage('No urls found to download');
         exit(1);
       }
-      inputArguments = _InputArguments(
+      inputArguments = InputArguments(
         username,
         password,
         urls,

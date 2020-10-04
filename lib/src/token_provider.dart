@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:puppeteer/puppeteer.dart';
+import 'package:pedantic/pedantic.dart';
 
 const _usernameKey = 'username';
 const _validityKey = 'validUntil';
@@ -11,6 +12,8 @@ const _tokenKey = 'token';
 const _userInputSelector = 'input.o-input[name=username]';
 const _passwordInputSelector = 'input.o-input[name=password]';
 const _submitButtonSelector = 'form button[type=submit]';
+
+const bool kReleaseMode = bool.fromEnvironment('dart.vm.product');
 
 class TokenProvider {
   TokenProvider._();
@@ -28,21 +31,17 @@ class TokenProvider {
 
   static Future<String> _getCachedToken(final String username) async {
     final userTokenCache = File(_userTokenFile(username));
+    String cachedToken;
     if (await userTokenCache.exists()) {
       final json = jsonDecode(userTokenCache.readAsStringSync());
       if (json[_usernameKey] == username) {
         final validUntil = json[_validityKey];
         if (validUntil > _millisecondsSinceEpoch) {
-          return json[_tokenKey];
-        } else {
-          return null;
+          cachedToken = json[_tokenKey];
         }
-      } else {
-        return null;
       }
-    } else {
-      return null;
     }
+    return cachedToken;
   }
 
   static void _cacheToken(
@@ -88,6 +87,7 @@ class TokenProvider {
         await loggedInPage.close();
 
         completer.complete(userToken);
+        unawaited(browser.close());
       });
     }
   }
@@ -100,28 +100,26 @@ class TokenProvider {
             .args.first.remoteObject.preview.properties
             .map((e) => e.toJson())
             .toList()[1];
-            
+
         if (jsonifiedConsoleMessage['name'] == 'errorDescription') {
           print(jsonifiedConsoleMessage['value']);
           throw 'Wrong email or password.';
         }
-      } catch (_) {
-      }
+      } catch (_) {}
     }
   }
 
   static Future<String> getUserToken(
-    final Browser browser,
     final String username,
     final String password,
   ) async {
-    final completer = Completer<String>();
-
     final cachedToken = await _getCachedToken(username);
     if (cachedToken?.isNotEmpty ?? false) {
       print('Found cached token for $username: $cachedToken');
       return cachedToken;
     }
+
+    final browser = await puppeteer.launch(headless: kReleaseMode);
 
     final loginPage = await browser.newPage();
     loginPage.onConsole.listen(_onConsoleLogMessagePrinted);
@@ -130,6 +128,7 @@ class TokenProvider {
       wait: Until.networkIdle,
     );
 
+    final completer = Completer<String>();
     browser.onTargetChanged
         .listen((target) => _onUrlChange(browser, username, target, completer));
 

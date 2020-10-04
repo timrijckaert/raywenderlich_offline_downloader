@@ -20,6 +20,9 @@ build/
 # Directory created by dartdoc
 doc/api/
 
+# Dart test
+test/credentials.json
+
 # output files
 raywenderlich-downloader/
 *_usertoken.json
