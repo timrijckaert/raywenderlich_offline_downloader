@@ -9,8 +9,8 @@ const _usernameKey = 'username';
 const _validityKey = 'validUntil';
 const _tokenKey = 'token';
 
-const _userInputSelector = 'input.o-input[name=username]';
-const _passwordInputSelector = 'input.o-input[name=password]';
+const _userInputSelector = 'input.o-input[id=user_login]';
+const _passwordInputSelector = 'input.o-input#user_password';
 const _submitButtonSelector = 'form button[type=submit]';
 
 const bool kReleaseMode = bool.fromEnvironment('dart.vm.product');
@@ -133,6 +133,10 @@ class TokenProvider {
         .listen((target) => _onUrlChange(browser, username, target, completer));
 
     await (await loginPage.$(_userInputSelector)).type(username);
+    await (await loginPage.$(_submitButtonSelector)).tap();
+
+    sleep(Duration(seconds: 1));
+
     await (await loginPage.$(_passwordInputSelector)).type(password);
     await (await loginPage.$(_submitButtonSelector)).tap();
 
